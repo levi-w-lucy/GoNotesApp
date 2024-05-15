@@ -10,6 +10,15 @@ import (
 	"example.com/GoNotesApp/todo"
 )
 
+type saver interface {
+	Save() error
+}
+
+type outputtable interface {
+	saver
+	Display()
+}
+
 func main() {
 	newNote, err := getNewNote()
 	if err != nil {
@@ -23,24 +32,29 @@ func main() {
 		return
 	}
 
-	todoTask.Display()
-	err = todoTask.Save()
-
+	err = outputData(todoTask)
 	if err != nil {
-		fmt.Printf("Saving the note failed with error %v\n", err)
-		return
-	}
-	fmt.Println("Successfully saved todo task!")
-
-	newNote.Display()
-	err = newNote.Save()
-
-	if err != nil {
-		fmt.Printf("Saving the note failed with error %v\n", err)
 		return
 	}
 
-	fmt.Println("Successfully saved note!")
+	err = outputData(newNote)
+}
+
+func outputData(data outputtable) error {
+	data.Display()
+	err := saveData(data)
+	return err
+}
+
+func saveData(data saver) error {
+	err := data.Save()
+
+	if err != nil {
+		fmt.Printf("Saving data failed with error %v\n", err)
+		return err
+	}
+	fmt.Println("Data saved successfully!")
+	return nil
 }
 
 func getNewTodo() (todo.Todo, error) {
