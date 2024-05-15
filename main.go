@@ -7,13 +7,30 @@ import (
 	"strings"
 
 	"example.com/GoNotesApp/note"
+	"example.com/GoNotesApp/todo"
 )
 
 func main() {
 	newNote, err := getNewNote()
 	if err != nil {
 		fmt.Println("Received error: ", err)
+		return
 	}
+
+	todoTask, err := getNewTodo()
+	if err != nil {
+		fmt.Println("Received error: ", err)
+		return
+	}
+
+	todoTask.Display()
+	err = todoTask.Save()
+
+	if err != nil {
+		fmt.Printf("Saving the note failed with error %v\n", err)
+		return
+	}
+	fmt.Println("Successfully saved todo task!")
 
 	newNote.Display()
 	err = newNote.Save()
@@ -24,6 +41,11 @@ func main() {
 	}
 
 	fmt.Println("Successfully saved note!")
+}
+
+func getNewTodo() (todo.Todo, error) {
+	text := getUserInput("Enter a todo task: ")
+	return todo.New(text)
 }
 
 func getNewNote() (newNote note.Note, err error) {
