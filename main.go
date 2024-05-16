@@ -37,7 +37,22 @@ func main() {
 		return
 	}
 
-	err = outputData(newNote)
+	outputData(newNote)
+}
+
+func printSomething(value interface{}) {
+
+	switch value.(type) {
+	case int:
+		fmt.Println("Integer :", value)
+	case float64:
+		fmt.Println("Float: ", value)
+	case string:
+		fmt.Println(value)
+	default:
+		fmt.Println("Couldn't determine type of ", value)
+	}
+	fmt.Println(value)
 }
 
 func outputData(data outputtable) error {
